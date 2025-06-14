@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRONET FIBRA - Consultor Virtual</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0c0a1f; /* Deep indigo background */
+        }
+        .main-container {
+            background: linear-gradient(180deg, rgba(12, 10, 31, 0) 0%, rgba(25, 23, 52, 0.8) 100%);
+        }
+        .glass-card {
+            background: rgba(40, 36, 70, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            transition: all 0.3s ease;
+        }
+        .glass-card-hover:hover {
+            background: rgba(60, 54, 105, 0.8);
+            border: 1px solid rgba(124, 58, 237, 0.7);
+            transform: translateY(-5px);
+        }
+        .plan-card-recommended {
+            background: rgba(124, 58, 237, 0.8);
+            border: 2px solid #a78bfa;
+            box-shadow: 0 0 25px rgba(124, 58, 237, 0.7);
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #8b5cf6, #6366f1);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+            transform: scale(1.05);
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out forwards;
+        }
+        .slide-in-up {
+            animation: slideInUp 0.6s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <div id="app" class="main-container min-h-screen flex flex-col items-center p-4 sm:p-6 md:p-8">
+        
+        <header class="w-full max-w-4xl text-center mb-8 fade-in">
+            <h1 class="text-4xl md:text-5xl font-black tracking-tighter">PRONET <span class="text-violet-400">FIBRA</span></h1>
+            <p class="text-violet-300 text-lg">Conectando você ao futuro.</p>
+        </header>
+
+        <main class="w-full max-w-4xl flex-grow">
+
+            <section id="intro" class="text-center p-6 md:p-8 rounded-2xl glass-card fade-in">
+                <h2 class="text-2xl md:text-3xl font-bold mb-3">Não sabe qual plano escolher?</h2>
+                <p class="text-lg text-gray-300 mb-6">Deixe nosso Consultor Virtual te ajudar! Responda 3 perguntas rápidas e nossa IA encontrará o plano de internet perfeito para você e sua família.</p>
+                <button id="start-btn" class="btn-primary font-bold py-3 px-8 rounded-full text-lg">Começar Agora</button>
+            </section>
+
+            <section id="questionnaire" class="hidden">
+                <div id="question-container" class="p-6 md:p-8 rounded-2xl glass-card">
+                    </div>
+            </section>
+            
+            <section id="recommendation" class="hidden text-center mt-10">
+                <div class="p-6 md:p-8 rounded-2xl glass-card">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-2">Plano Ideal Encontrado!</h2>
+                    <p id="recommendation-text" class="text-lg text-gray-300 mb-6">Com base nas suas respostas, este é o plano que recomendamos para você:</p>
+                </div>
+            </section>
+
+            <section id="plans" class="hidden mt-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    </div>
+            </section>
+
+            <section id="cta" class="hidden text-center mt-10">
+                 <div class="p-6 md:p-8 rounded-2xl glass-card">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-4">Pronto para a ultravelocidade?</h2>
+                    <a id="whatsapp-link" href="#" target="_blank" class="btn-primary inline-block font-bold py-4 px-10 rounded-full text-xl">
+                        Contrate Agora
+                    </a>
+                    <p class="text-sm text-gray-400 mt-4">✓ Site protegido</p>
+                </div>
+            </section>
+
+        </main>
+        
+        <footer class="w-full max-w-4xl text-center mt-10 p-4 text-gray-500 text-sm">
+            &copy; 2025 PRONET FIBRA. Todos os direitos reservados.
+        </footer>
+
+    </div>
+
+    <script>
+        const appState = {
+            currentQuestionIndex: 0,
+            answers: {},
+            questions: [
+                {
+                    key: 'devices',
+                    text: 'Quantas pessoas e dispositivos (celulares, TVs, computadores) usam a internet na sua casa ao mesmo tempo?',
+                    options: [
+                        { text: 'Até 2 pessoas / 4 dispositivos', value: 1 },
+                        { text: 'De 3 a 4 pessoas / 8 dispositivos', value: 2 },
+                        { text: 'Mais de 5 pessoas / Muitos dispositivos', value: 3 },
+                    ],
+                },
+                {
+                    key: 'usage',
+                    text: 'Qual é o principal uso da sua internet?',
+                    options: [
+                        { text: 'Redes sociais e e-mails', value: 1 },
+                        { text: 'Filmes e séries em 4K, trabalho de casa', value: 2 },
+                        { text: 'Jogos online, streaming e uploads pesados', value: 3 },
+                    ],
+                },
+                {
+                    key: 'priority',
+                    text: 'O que é mais importante para você?',
+                    options: [
+                        { text: 'O melhor custo-benefício', value: 1 },
+                        { text: 'Velocidade para toda a família sem travar', value: 2 },
+                        { text: 'A máxima performance e velocidade disponível', value: 3 },
+                    ],
+                }
+            ],
+            plans: [
+                { id: 1, name: '300 MB', price: '79,99', description: 'Perfeito para navegar, estudar e assistir vídeos em alta definição.' },
+                { id: 2, name: '400 MB', price: '99,99', description: 'Ideal para famílias conectadas, home office e streaming em 4K.' },
+                { id: 3, name: '500 MB', price: '149,99', description: 'A ultravelocidade para gamers, streamers e quem precisa da máxima performance.' },
+            ]
+        };
+
+        const startBtn = document.getElementById('start-btn');
+        const introSection = document.getElementById('intro');
+        const questionnaireSection = document.getElementById('questionnaire');
+        const questionContainer = document.getElementById('question-container');
+        const recommendationSection = document.getElementById('recommendation');
+        const plansSection = document.getElementById('plans');
+        const ctaSection = document.getElementById('cta');
+        // Novo: Obtém o elemento do link do WhatsApp
+        const whatsappLink = document.getElementById('whatsapp-link'); 
+
+        startBtn.addEventListener('click', () => {
+            introSection.classList.add('hidden');
+            questionnaireSection.classList.remove('hidden');
+            questionnaireSection.classList.add('slide-in-up');
+            displayQuestion();
+        });
+
+        function displayQuestion() {
+            if (appState.currentQuestionIndex >= appState.questions.length) {
+                showRecommendation();
+                return;
+            }
+
+            const question = appState.questions[appState.currentQuestionIndex];
+            questionContainer.innerHTML = `
+                <div class="fade-in">
+                    <h3 class="text-xl md:text-2xl font-bold mb-6 text-center">${question.text}</h3>
+                    <div class="space-y-4">
+                        ${question.options.map((option, index) => `
+                            <button class="w-full text-left p-4 rounded-lg text-lg glass-card glass-card-hover" data-value="${option.value}">
+                                ${option.text}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            questionContainer.querySelectorAll('button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    appState.answers[question.key] = parseInt(e.currentTarget.dataset.value);
+                    appState.currentQuestionIndex++;
+                    displayQuestion();
+                });
+            });
+        }
+
+        function calculateRecommendation() {
+            const score = Object.values(appState.answers).reduce((sum, value) => sum + value, 0);
+            if (score <= 4) {
+                return 1; // 300 MB
+            } else if (score <= 7) {
+                return 2; // 400 MB
+            } else {
+                return 3; // 500 MB
+            }
+        }
+        
+        function showRecommendation() {
+            const recommendedPlanId = calculateRecommendation();
+            // Encontre o objeto do plano recomendado
+            const recommendedPlan = appState.plans.find(plan => plan.id === recommendedPlanId);
+            
+            questionnaireSection.classList.add('hidden');
+            
+            recommendationSection.classList.remove('hidden');
+            recommendationSection.classList.add('slide-in-up');
+            
+            plansSection.classList.remove('hidden');
+            plansSection.classList.add('slide-in-up');
+            
+            ctaSection.classList.remove('hidden');
+            ctaSection.classList.add('slide-in-up');
+
+            const plansContainer = plansSection.querySelector('div');
+            plansContainer.innerHTML = appState.plans.map(plan => {
+                const isRecommended = plan.id === recommendedPlanId;
+                return `
+                    <div class="p-6 rounded-2xl glass-card ${isRecommended ? 'plan-card-recommended' : ''} flex flex-col">
+                        ${isRecommended ? '<span class="bg-white text-violet-700 font-bold text-sm px-3 py-1 rounded-full self-start mb-4">RECOMENDADO</span>' : ''}
+                        <h3 class="text-4xl font-black">${plan.name}</h3>
+                        <p class="text-2xl font-bold text-violet-300 mt-1 mb-4">R$ ${plan.price}<span class="text-lg font-normal text-gray-400">/mês</span></p>
+                        <p class="text-gray-300 flex-grow">${plan.description}</p>
+                    </div>
+                `;
+            }).join('');
+
+            // CONSTRUÇÃO DA MENSAGEM DO WHATSAPP
+            // Substitua '5585989932950' pelo seu número de telefone com DDI e DDD
+            const whatsappNumber = '5585989932950'; 
+            // Mensagem personalizada usando os dados do plano recomendado
+            const message = `Olá! Vim através do Consultor Virtual e gostaria de saber mais sobre o plano ${recommendedPlan.name} da PRONET FIBRA, no valor de R$ ${recommendedPlan.price}.`;
+            // Codifica a mensagem para que ela seja exibida corretamente na URL do WhatsApp
+            const encodedMessage = encodeURIComponent(message); 
+
+            // Atualiza o atributo 'href' do botão do WhatsApp com a URL completa
+            whatsappLink.href = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+        }
+
+    </script>
+</body>
+</html>
